@@ -1,0 +1,42 @@
+---
+title: "Assignment 3 - Storm Events"
+author: "Sowmya"
+date: "2022-09-26"
+output: word_document
+---
+
+# Description
+
+The Assignment 3 - Storm Events project provides for the data wrangling and data visualization of the storm events data collected from https://www1.ncdc.noaa.gov/pub/data/swdi/stormevents/csvfiles/ for 1997. The data wrangling involves data preparation, data cleaning and merging of subsets of the data with the R data set, states.
+
+<br>
+
+# Installation - Packages
+
+The project uses to packages; Tidyverse and Stringr. Installation and loading process is given below:
+
+install.packages("tidyverse")
+install.packages("stringr")
+library(tidyverse)
+library(stringr)
+
+<br>
+
+# Sections
+
+The project has a total of sections that handle the data importation (1), data preparation and cleaning (7), merging of data sets (1) and data visualization (1).
+
+<br>
+
+# Key Functions
+
+read_csv() - readr, tidyverse
+str_to_title() - stringr
+str_pad() - stringr
+rename_all() - dplyr, tidyverse
+merge() - base
+
+
+
+
+

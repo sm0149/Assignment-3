@@ -1,0 +1,160 @@
+---
+title: 'Storms Events: Assignment 3'
+author: "Sowmya"
+date: "2022-09-26"
+output: word_document
+---
+
+# Section 1
+
+<br>
+
+```{r}
+
+#Loading tidyverse package for loading the data
+library(tidyverse)
+#Loading Data
+StormEventsData97 <- read_csv("StormEvents_details-ftp_v1.0_d1997_c20220425.csv.gz")
+#Getting Data overview
+head(StormEventsData97)
+
+```
+
+<br>
+
+# Section 2
+
+<br>
+
+```{r}
+#Variable selection 
+var_selected <- c("BEGIN_YEARMONTH", "BEGIN_DAY", "BEGIN_TIME", "BEGIN_DATE_TIME","END_YEARMONTH", "END_DAY", "END_TIME", 
+                  "END_DATE_TIME", "EPISODE_ID", "EVENT_ID", "STATE", "STATE_FIPS", "CZ_NAME", "CZ_TYPE", "CZ_FIPS", "EVENT_TYPE", 
+                  "SOURCE", "BEGIN_LAT", "BEGIN_LON", "END_LAT", "END_LON")
+#Sub-setting the data
+StormEventsData97 <- StormEventsData97[var_selected]
+```
+
+<br>
+
+# Section 3
+
+<br>
+
+```{r}
+#Sorting data using BEGIN_YEARMONTH variable
+StormEventsData97 <- StormEventsData97 %>% arrange(BEGIN_YEARMONTH)
+#Getting Data overview after sorting
+head(StormEventsData97)
+```
+
+<br>
+
+# Section 4
+
+<br>
+
+```{r}
+#Loading Stringr Package
+library(stringr)
+#Setting the State variable entries to title case
+StormEventsData97$STATE <- str_to_title(StormEventsData97$STATE)
+#Setting the county variable entries to title case
+StormEventsData97$CZ_NAME <- str_to_title(StormEventsData97$CZ_NAME)
+```
+
+<br>
+
+# Section 5
+
+<br>
+
+```{r}
+#Retaining entries with CZ Type C and removing the CZ Type column
+StormEventsData97 <- StormEventsData97 %>% filter(CZ_TYPE == "C")
+StormEventsData97 <- StormEventsData97[, -which(names(StormEventsData97) == "CZ_TYPE")]
+```
+
+<br>
+
+# Section 6
+
+<br>
+
+```{r}
+#State FIPS padding using 0 
+StormEventsData97$STATE_FIPS <- str_pad(StormEventsData97$STATE_FIPS, width = 3, side = "left", pad = "0")
+#Country FIPS padding using 0 
+StormEventsData97$CZ_FIPS <- str_pad(StormEventsData97$CZ_FIPS, width = 4, side = "left", pad = "0")
+#Forming one fips column
+StormEventsData97 <- unite(StormEventsData97, col = "fips", c("STATE_FIPS", "CZ_FIPS"), sep = "")
+```
+
+<br>
+
+# Section 7
+
+<br>
+
+```{r}
+#Setting column names in the data to lower case
+StormEventsData97 <- rename_all(StormEventsData97, tolower)
+```
+
+<br>
+
+# Section 8
+
+<br>
+
+```{r}
+#Loading state data
+data("state")
+#Forming data frame from state data
+stateInfoData <- data.frame(state.name, state.area, state.region)
+
+```
+
+<br>
+
+# Section 9
+
+<br>
+
+```{r}
+#Getting number of events per state
+state_events <- data.frame(table(StormEventsData97$state))
+#Renaming State events data columns
+colnames(state_events) <- c("state", "events")
+#Merging with state.data frame data set
+storm_merge <- merge(x = stateInfoData, y = state_events, by.x = "state.name", by.y = "state")
+```
+
+<br>
+
+# Section 10
+
+<br>
+
+```{r}
+#Land area vs number of events plot
+storm_merge %>% ggplot() + aes(x = state.area, y = events, colour = state.region) + 
+  geom_point() + scale_color_hue(direction = 1) +
+  labs(x = "Land area (square miles)", y = "# of strom events in 1997", color = "region") +
+  theme_minimal()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
